@@ -3524,6 +3524,11 @@ void ProcessMessage(
         return;
     }
 
+    if (msg_type == NetMsgType::GETCFILTERS) {
+        ProcessGetCFilters(*pfrom, vRecv, chainparams, *connman);
+        return true;
+    }
+
     if (msg_type == NetMsgType::GETCFHEADERS) {
         ProcessGetCFHeaders(pfrom, vRecv, chainparams, *connman);
         return;
