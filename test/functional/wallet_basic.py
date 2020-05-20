@@ -204,14 +204,14 @@ class WalletTest(BitcoinTestFramework):
         node_0_bal = self.check_fee_amount(self.nodes[0].getbalance(), Decimal('20'), fee_per_byte, self.get_vsize(self.nodes[2].gettransaction(txid)['hex']))
 
         # Sendmany 10 BTC
-        txid = self.nodes[2].sendmany('', {address: 10}, 0, "", []) 
+        txid = self.nodes[2].sendmany('', {address: 10}, 0, "", [])  
         self.nodes[2].generate(1)
         self.sync_all(self.nodes[0:3])
         node_0_bal += Decimal('10')
         node_2_bal = self.check_fee_amount(self.nodes[2].getbalance(), node_2_bal - Decimal('10'), fee_per_byte, self.get_vsize(self.nodes[2].gettransaction(txid)['hex']))
         assert_equal(self.nodes[0].getbalance(), node_0_bal) 
         # Sendmany 10 BTC with subtract fee from amount
-        txid = self.nodes[2].sendmany('', {address: 10}, 0, "", [address]) 
+        txid = self.nodes[2].sendmany('', {address: 10}, 0, "", [address])  
         self.nodes[2].generate(1)
         self.sync_all(self.nodes[0:3])
         node_2_bal -= Decimal('10')
@@ -658,8 +658,6 @@ class WalletTest(BitcoinTestFramework):
         #testing send_rpc_verbose sendtoaddress
         txid_feeReason_two = self.nodes[2].sendmany(dummy = '', amounts = {address: 10}, verbose = True) 
         assert_equal(str(txid_feeReason_two["Fee Reason"]), "Fallback fee")
-
- 
 
 if __name__ == '__main__':
     WalletTest().main()
