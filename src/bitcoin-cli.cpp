@@ -560,6 +560,22 @@ static void SetGenerateToAddressArgs(const std::string& address, std::vector<std
     args.emplace(args.begin() + 1, address);
 }
 
+/**
+ * Check bounds and set up args for RPC generatetoaddress params: nblocks, address, maxtries.
+ * @param[in] address  Reference to const string address to insert into the args.
+ * @param     args     Reference to vector of string args to modify.
+ */
+static void SetGenerateToAddressArgs(const std::string& address, std::vector<std::string>& args)
+{
+    if (args.size() > 2) throw std::runtime_error("too many arguments (maximum 2 for nblocks and maxtries)");
+    if (args.size() == 0) {
+        args.emplace_back(DEFAULT_NBLOCKS);
+    } else if (args.at(0) == "0") {
+        throw std::runtime_error("the first argument (number of blocks to generate, default: " + DEFAULT_NBLOCKS + ") must be an integer value greater than zero");
+    }
+    args.emplace(args.begin() + 1, address);
+}
+
 static int CommandLineRPC(int argc, char *argv[])
 {
     std::string strPrint;
