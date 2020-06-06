@@ -416,7 +416,7 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
                             "Whether to display the fee reason or not."},
                 },
                 RPCResult{
-                    RPCResult::Type::STR_HEX, "txid", "The transaction id.",  
+                    RPCResult::Type::STR_HEX, "txid", "The transaction id.", 
                 },
                 RPCExamples{
                     HelpExampleCli("sendtoaddress", "\"" + EXAMPLE_ADDRESS[0] + "\" 0.1")
@@ -469,21 +469,19 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
     coin_control.m_avoid_address_reuse = GetAvoidReuseFlag(pwallet, request.params[8]);
     // We also enable partial spend avoidance if reuse avoidance is set.
     coin_control.m_avoid_partial_spends |= coin_control.m_avoid_address_reuse;
-
     SetFeeEstimateMode(pwallet, coin_control, request.params[7], request.params[6]);
-
-    EnsureWalletIsUnlocked(pwallet); 
+    EnsureWalletIsUnlocked(pwallet);
+ 
     UniValue entry(UniValue::VOBJ);
     std::string feeReason;
     CTransactionRef tx = SendMoney(pwallet, dest, nAmount, fSubtractFeeFromAmount, coin_control, std::move(mapValue), feeReason);
-
-    bool verbose = request.params[9].isNull() ? false : request.params[9].get_bool(); 
+    bool verbose = request.params[9].isNull() ? false : request.params[9].get_bool();
     if(verbose){
         entry.pushKV("hex", tx->GetHash().GetHex());
         entry.pushKV("Fee Reason", feeReason);
         return entry;
     } 
-  
+ 
     return tx->GetHash().GetHex();
 }
 
@@ -844,6 +842,12 @@ static UniValue sendmany(const JSONRPCRequest& request)
                  RPCResult{
                      RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n" 
             "the number of addresses.",  
+ 
+                    {"verbose", RPCArg::Type::BOOL,  /* default */ "false", 
+                            "Whether to display the fee reason or not."},
+                },
+                 RPCResult{
+                     RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n" 
                  },
                 RPCExamples{
             "\nSend two amounts to two different addresses:\n"
@@ -933,18 +937,10 @@ static UniValue sendmany(const JSONRPCRequest& request)
     bool fCreated = pwallet->CreateTransaction(vecSend, tx, nFeeRequired, nChangePosRet, error, coin_control, feeReason);
     if (!fCreated)
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, error.original);
-    pwallet->CommitTransaction(tx, std::move(mapValue), {} /* orderForm */); 
-    
-    bool verbose = request.params[8].isNull() ? false : request.params[8].get_bool();
- 
-    if(verbose){
-        entry.pushKV("hex", tx->GetHash().GetHex());
-        entry.pushKV("Fee Reason", feeReason);  
-        return entry;
-    } 
-     
-   return tx->GetHash().GetHex();
 
+    pwallet->CommitTransaction(tx, std::move(mapValue), {} /* orderForm */); 
+ 
+    bool verbose = request.params[8].isNull() ? false : request.params[8].get_bool();
     if(verbose){
         entry.pushKV("hex", tx->GetHash().GetHex());
         entry.pushKV("Fee Reason", feeReason);  
