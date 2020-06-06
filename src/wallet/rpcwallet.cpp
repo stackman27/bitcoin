@@ -416,7 +416,7 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
                             "Whether to display the fee reason or not."},
                 },
                 RPCResult{
-                    RPCResult::Type::STR_HEX, "txid", "The transaction id.", 
+                    RPCResult::Type::STR_HEX, "txid", "The transaction id.",
                 },
                 RPCExamples{
                     HelpExampleCli("sendtoaddress", "\"" + EXAMPLE_ADDRESS[0] + "\" 0.1")
@@ -825,7 +825,9 @@ static UniValue sendmany(const JSONRPCRequest& request)
                     {"replaceable", RPCArg::Type::BOOL, /* default */ "wallet default", "Allow this transaction to be replaced by a transaction with higher fees via BIP 125"},
                     {"conf_target", RPCArg::Type::NUM, /* default */ "wallet default", "Confirmation target (in blocks), or fee rate (for " + CURRENCY_UNIT + "/kB or " + CURRENCY_ATOM + "/B estimate modes)"},
                     {"estimate_mode", RPCArg::Type::STR, /* default */ "unset", std::string() + "The fee estimate mode, must be one of (case insensitive):\n"
-            "       \"" + FeeModes("\"\n\"") + "\""},
+            "       \"" + FeeModes("\"\n\"") + "\""},  
+                    {"verbose", RPCArg::Type::BOOL,  /* default */ "false",
+                            "Whether to display the fee reason or not."}, 
                 },
                  RPCResult{
                      RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n"
