@@ -32,6 +32,7 @@
 #include <noui.h>
 #include <uint256.h>
 #include <util/system.h>
+#include <util/translation.h>
 #include <util/threadnames.h>
 #include <util/translation.h>
 #include <validation.h>
