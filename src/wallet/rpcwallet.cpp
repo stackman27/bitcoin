@@ -323,7 +323,7 @@ static UniValue setlabel(const JSONRPCRequest& request)
 }
 
 
-static CTransactionRef SendMoney(CWallet* const pwallet, const CTxDestination& address, CAmount nValue, bool fSubtractFeeFromAmount, const CCoinControl& coin_control, mapValue_t mapValue)
+static CTransactionRef SendMoney(CWallet* const pwallet, const CTxDestination& address, CAmount nValue, bool fSubtractFeeFromAmount, const CCoinControl& coin_control, mapValue_t mapValue, std::string& feeReason)
 {
     CAmount curBalance = pwallet->GetBalance(0, coin_control.m_avoid_address_reuse).m_mine_trusted;
 
@@ -344,8 +344,8 @@ static CTransactionRef SendMoney(CWallet* const pwallet, const CTxDestination& a
     int nChangePosRet = -1;
     CRecipient recipient = {scriptPubKey, nValue, fSubtractFeeFromAmount};
     vecSend.push_back(recipient);
-    CTransactionRef tx;
-    if (!pwallet->CreateTransaction(vecSend, tx, nFeeRequired, nChangePosRet, error, coin_control)) {
+    CTransactionRef tx; 
+    if (!pwallet->CreateTransaction(vecSend, tx, nFeeRequired, nChangePosRet, error, coin_control, feeReason)) {
         if (!fSubtractFeeFromAmount && nValue + nFeeRequired > curBalance)
             error = strprintf(Untranslated("Error: This transaction requires a transaction fee of at least %s"), FormatMoney(nFeeRequired));
         throw JSONRPCError(RPC_WALLET_ERROR, error.original);
@@ -448,14 +448,15 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
     coin_control.m_avoid_partial_spends |= coin_control.m_avoid_address_reuse;
 
     EnsureWalletIsUnlocked(pwallet);
-
-    CTransactionRef tx = SendMoney(pwallet, dest, nAmount, fSubtractFeeFromAmount, coin_control, std::move(mapValue));
     UniValue entry(UniValue::VOBJ);
+    std::string feeReason;
+    CTransactionRef tx = SendMoney(pwallet, dest, nAmount, fSubtractFeeFromAmount, coin_control, std::move(mapValue), feeReason);
+
     bool verbose = request.params[10].isNull() ? false : request.params[10].get_bool();
 
     if(verbose){
         entry.pushKV("hex", tx->GetHash().GetHex());
-        entry.pushKV("Fee Reason", getFeeReason());
+        entry.pushKV("Fee Reason", feeReason);
         return entry;
     } 
 
@@ -917,24 +918,26 @@ static UniValue sendmany(const JSONRPCRequest& request)
     std::shuffle(vecSend.begin(), vecSend.end(), FastRandomContext());
 
     // Send
+    UniValue entry(UniValue::VOBJ);
     CAmount nFeeRequired = 0;
     int nChangePosRet = -1;
     bilingual_str error;
     CTransactionRef tx;
-    bool fCreated = pwallet->CreateTransaction(vecSend, tx, nFeeRequired, nChangePosRet, error, coin_control);
+    std::string feeReason;
+    bool fCreated = pwallet->CreateTransaction(vecSend, tx, nFeeRequired, nChangePosRet, error, coin_control, feeReason);
     if (!fCreated)
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, error.original);
     pwallet->CommitTransaction(tx, std::move(mapValue), {} /* orderForm */);
-    UniValue entry(UniValue::VOBJ);
+
     bool verbose = request.params[9].isNull() ? false : request.params[9].get_bool();
     
-     if(verbose){
+    if(verbose){
         entry.pushKV("hex", tx->GetHash().GetHex());
-        entry.pushKV("Fee Reason", getFeeReason()); 
+        entry.pushKV("Fee Reason", feeReason);  
         return entry;
-     } 
-
-    return tx->GetHash().GetHex();
+    } 
+     
+   return tx->GetHash().GetHex();
 }
 
 static UniValue addmultisigaddress(const JSONRPCRequest& request)

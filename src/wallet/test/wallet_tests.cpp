@@ -512,11 +512,12 @@ public:
     {
         CTransactionRef tx;
         CAmount fee;
+        std::string feeReaon; 
         int changePos = -1;
         bilingual_str error;
         CCoinControl dummy;
         {
-            BOOST_CHECK(wallet->CreateTransaction({recipient}, tx, fee, changePos, error, dummy));
+            BOOST_CHECK(wallet->CreateTransaction({recipient}, tx, fee, changePos, error, dummy, feeReaon));
         }
         wallet->CommitTransaction(tx, {}, {});
         CMutableTransaction blocktx;
