@@ -87,8 +87,7 @@ class WalletTest(BitcoinTestFramework):
 
         # Send 21 BTC from 0 to 2 using sendtoaddress call.
         self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 11)
-        mempool_txid = self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 10)  
-        
+        mempool_txid = self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 10)
 
         self.log.info("test gettxout (second part)")
         # utxo spent in mempool should be visible if you exclude mempool
