@@ -470,12 +470,13 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
     // We also enable partial spend avoidance if reuse avoidance is set.
     coin_control.m_avoid_partial_spends |= coin_control.m_avoid_address_reuse;
     SetFeeEstimateMode(pwallet, coin_control, request.params[7], request.params[6]);
-    EnsureWalletIsUnlocked(pwallet);
- 
+    EnsureWalletIsUnlocked(pwallet); 
     UniValue entry(UniValue::VOBJ);
     std::string feeReason;
     CTransactionRef tx = SendMoney(pwallet, dest, nAmount, fSubtractFeeFromAmount, coin_control, std::move(mapValue), feeReason);
+
     bool verbose = request.params[9].isNull() ? false : request.params[9].get_bool();
+
     if(verbose){
         entry.pushKV("hex", tx->GetHash().GetHex());
         entry.pushKV("Fee Reason", feeReason);
@@ -943,11 +944,10 @@ static UniValue sendmany(const JSONRPCRequest& request)
     bool verbose = request.params[8].isNull() ? false : request.params[8].get_bool();
     if(verbose){
         entry.pushKV("hex", tx->GetHash().GetHex());
-        entry.pushKV("Fee Reason", feeReason);  
-        return entry;
+        entry.pushKV("Fee Reason", feeReason);   
     } 
      
-   return tx->GetHash().GetHex(); 
+   return tx->GetHash().GetHex();  
 }
 
 static UniValue addmultisigaddress(const JSONRPCRequest& request)

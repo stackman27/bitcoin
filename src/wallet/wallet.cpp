@@ -57,6 +57,7 @@ static std::list<LoadWalletFn> g_load_wallet_fns GUARDED_BY(cs_wallets);
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 std::string feeReason; 
@@ -70,6 +71,9 @@ std::string feeReason;
 =======
 std::string feeReason; 
 >>>>>>> Added feereason returns in rpc send functions
+=======
+ 
+>>>>>>> Implemented fee Reason functionality in send rpc's. Not tested!
 
 bool AddWallet(const std::shared_ptr<CWallet>& wallet)
 {
@@ -2715,6 +2719,7 @@ OutputType CWallet::TransactionChangeType(const Optional<OutputType>& change_typ
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CTransactionRef& tx, CAmount& nFeeRet, int& nChangePosInOut, bilingual_str& error, const CCoinControl& coin_control, std::string& feeReason, bool sign)
 =======
 =======
@@ -2727,6 +2732,9 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CTransac
 =======
 bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CTransactionRef& tx, CAmount& nFeeRet, int& nChangePosInOut, bilingual_str& error, const CCoinControl& coin_control, std::string& feeReason, bool sign)
 >>>>>>> [test] test send* wallet rpcs with verbose = True
+=======
+bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CTransactionRef& tx, CAmount& nFeeRet, int& nChangePosInOut, bilingual_str& error, const CCoinControl& coin_control, std::string& feeReason, bool sign)
+>>>>>>> Implemented fee Reason functionality in send rpc's. Not tested!
 {
     CAmount nValue = 0;
     const OutputType change_type = TransactionChangeType(coin_control.m_change_type ? *coin_control.m_change_type : m_default_change_type, vecSend);
@@ -3088,6 +3096,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CTransac
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 std::string getFeeReason() {
     return feeReason;
@@ -3102,6 +3111,8 @@ std::string getFeeReason() {
     return feeReason;
 }
 >>>>>>> Added feereason returns in rpc send functions
+=======
+>>>>>>> Implemented fee Reason functionality in send rpc's. Not tested!
 
 void CWallet::CommitTransaction(CTransactionRef tx, mapValue_t mapValue, std::vector<std::pair<std::string, std::string>> orderForm)
 {
