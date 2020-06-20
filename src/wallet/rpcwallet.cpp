@@ -474,7 +474,6 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
     UniValue entry(UniValue::VOBJ);
     std::string feeReason;
     CTransactionRef tx = SendMoney(pwallet, dest, nAmount, fSubtractFeeFromAmount, coin_control, std::move(mapValue), feeReason);
-
     bool verbose = request.params[9].isNull() ? false : request.params[9].get_bool();
 
     if(verbose){
@@ -482,7 +481,7 @@ static UniValue sendtoaddress(const JSONRPCRequest& request)
         entry.pushKV("Fee Reason", feeReason);
         return entry;
     } 
- 
+   
     return tx->GetHash().GetHex();
 }
 
@@ -849,6 +848,10 @@ static UniValue sendmany(const JSONRPCRequest& request)
                 },
                  RPCResult{
                      RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n" 
+                },
+                 RPCResult{
+                     RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n" 
+            "the number of addresses.",  
                  },
                 RPCExamples{
             "\nSend two amounts to two different addresses:\n"
@@ -942,12 +945,15 @@ static UniValue sendmany(const JSONRPCRequest& request)
     pwallet->CommitTransaction(tx, std::move(mapValue), {} /* orderForm */); 
  
     bool verbose = request.params[8].isNull() ? false : request.params[8].get_bool();
+    
     if(verbose){
         entry.pushKV("hex", tx->GetHash().GetHex());
-        entry.pushKV("Fee Reason", feeReason);   
+        entry.pushKV("Fee Reason", feeReason);  
+        return entry;
     } 
      
-   return tx->GetHash().GetHex();  
+   return tx->GetHash().GetHex();
+  
 }
 
 static UniValue addmultisigaddress(const JSONRPCRequest& request)
