@@ -87,7 +87,8 @@ class WalletTest(BitcoinTestFramework):
 
         # Send 21 BTC from 0 to 2 using sendtoaddress call.
         self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 11)
-        mempool_txid = self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 10)
+        mempool_txid = self.nodes[0].sendtoaddress(self.nodes[2].getnewaddress(), 10)  
+        
 
         self.log.info("test gettxout (second part)")
         # utxo spent in mempool should be visible if you exclude mempool
@@ -189,7 +190,7 @@ class WalletTest(BitcoinTestFramework):
         address = self.nodes[0].getnewaddress("test")
         fee_per_byte = Decimal('0.001') / 1000
         self.nodes[2].settxfee(fee_per_byte * 1000)
-        txid = self.nodes[2].sendtoaddress(address, 10, "", "", False) 
+        txid = self.nodes[2].sendtoaddress(address, 10, "", "", False)  
         self.nodes[2].generate(1)
         self.sync_all(self.nodes[0:3])
         node_2_bal = self.check_fee_amount(self.nodes[2].getbalance(), Decimal('84'), fee_per_byte, self.get_vsize(self.nodes[2].gettransaction(txid)['hex']))
@@ -201,9 +202,9 @@ class WalletTest(BitcoinTestFramework):
         node_2_bal -= Decimal('10')
         assert_equal(self.nodes[2].getbalance(), node_2_bal)
         node_0_bal = self.check_fee_amount(self.nodes[0].getbalance(), Decimal('20'), fee_per_byte, self.get_vsize(self.nodes[2].gettransaction(txid)['hex']))
-        
+
         # Sendmany 10 BTC
-        txid = self.nodes[2].sendmany('', {address: 10}, 0, "", [])  
+        txid = self.nodes[2].sendmany('', {address: 10}, 0, "", []) 
         self.nodes[2].generate(1)
         self.sync_all(self.nodes[0:3])
         node_0_bal += Decimal('10')
