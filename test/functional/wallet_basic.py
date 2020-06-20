@@ -656,6 +656,6 @@ class WalletTest(BitcoinTestFramework):
         #testing send_rpc_verbose sendtoaddress
         txid_feeReason_two = self.nodes[2].sendmany(dummy = '', amounts = {address: 10}, verbose = True) 
         assert_equal(str(txid_feeReason_two["Fee Reason"]), "Fallback fee")
- 
+
 if __name__ == '__main__':
     WalletTest().main()
