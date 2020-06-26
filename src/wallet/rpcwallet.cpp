@@ -4255,5 +4255,8 @@ static const CRPCCommand commands[] =
 // clang-format on
     return MakeSpan(commands);
 }
+<<<<<<< HEAD
 
 interfaces::Chain* g_rpc_chain = nullptr;
+=======
+>>>>>>> Fixed Merge Conflict rpc_reason

@@ -243,7 +243,6 @@ BITCOIN_CORE_H = \
   versionbitsinfo.h \
   wallet/bdb.h \
   wallet/coincontrol.h \
-  wallet/coinselection.h \
   wallet/context.h \
   wallet/crypter.h \
   wallet/db.h \

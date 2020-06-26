@@ -17,7 +17,6 @@
 #include <util/check.h>
 #include <util/ref.h>
 #include <util/system.h>
-#include <util/ui_change_type.h>
 #include <wallet/context.h>
 #include <wallet/feebumper.h>
 #include <wallet/fees.h>
