@@ -836,22 +836,12 @@ static UniValue sendmany(const JSONRPCRequest& request)
             "       \"UNSET\"\n"
             "       \"ECONOMICAL\"\n"
             "       \"CONSERVATIVE\""},
- 
-                    {"verbose", RPCArg::Type::BOOL,  /* default */ "false", 
-                },
-                 RPCResult{
-                     RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n" 
-            "the number of addresses.",  
- 
-                    {"verbose", RPCArg::Type::BOOL,  /* default */ "false", 
+                    {"verbose", RPCArg::Type::BOOL,  /* default */ "false",
                             "Whether to display the fee reason or not."},
                 },
                  RPCResult{
-                     RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n" 
-                },
-                 RPCResult{
-                     RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n" 
-            "the number of addresses.",  
+                     RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n"
+            "the number of addresses.", 
                  },
                 RPCExamples{
             "\nSend two amounts to two different addresses:\n"
@@ -4265,3 +4255,5 @@ static const CRPCCommand commands[] =
 // clang-format on
     return MakeSpan(commands);
 }
+
+interfaces::Chain* g_rpc_chain = nullptr;
