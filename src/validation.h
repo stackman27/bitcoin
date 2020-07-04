@@ -29,6 +29,7 @@
 #include <memory>
 #include <set>
 #include <stdint.h>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -149,6 +150,8 @@ extern bool fHavePruned;
 extern bool fPruneMode;
 /** Number of MiB of block files that we're trying to stay below. */
 extern uint64_t nPruneTarget;
+/** Documentation for argument 'checklevel'. */
+extern const std::vector<std::string> CHECKLEVEL_DOC;
 
 /** Open a block file (blk?????.dat) */
 FILE* OpenBlockFile(const FlatFilePos &pos, bool fReadOnly = false);
@@ -796,7 +799,8 @@ public:
     std::vector<CChainState*> GetAll();
 
     //! The most-work chain.
-    CChain& ActiveChain() const;
+    CChainState& ActiveChainstate() const;
+    CChain& ActiveChain() const { return ActiveChainstate().m_chain; }
     int ActiveHeight() const { return ActiveChain().Height(); }
     CBlockIndex* ActiveTip() const { return ActiveChain().Tip(); }
 
@@ -876,14 +880,11 @@ public:
 /** DEPRECATED! Please use node.chainman instead. May only be used in validation.cpp internally */
 extern ChainstateManager g_chainman GUARDED_BY(::cs_main);
 
-/** @returns the most-work valid chainstate. */
+/** Please prefer the identical ChainstateManager::ActiveChainstate */
 CChainState& ChainstateActive();
 
-/** @returns the most-work chain. */
+/** Please prefer the identical ChainstateManager::ActiveChain */
 CChain& ChainActive();
-
-/** @returns the global block index map. */
-BlockMap& BlockIndex();
 
 /** Global variable that points to the active block tree (protected by cs_main) */
 extern std::unique_ptr<CBlockTreeDB> pblocktree;

@@ -5,8 +5,8 @@
 
 #include <protocol.h>
 
-#include <util/system.h>
 #include <util/strencodings.h>
+#include <util/system.h>
 
 #ifndef WIN32
 # include <arpa/inet.h>
@@ -40,6 +40,8 @@ const char *SENDCMPCT="sendcmpct";
 const char *CMPCTBLOCK="cmpctblock";
 const char *GETBLOCKTXN="getblocktxn";
 const char *BLOCKTXN="blocktxn";
+const char *GETCFILTERS="getcfilters";
+const char *CFILTER="cfilter";
 const char *GETCFHEADERS="getcfheaders";
 const char *CFHEADERS="cfheaders";
 const char *GETCFCHECKPT="getcfcheckpt";
@@ -75,6 +77,8 @@ const static std::string allNetMessageTypes[] = {
     NetMsgType::CMPCTBLOCK,
     NetMsgType::GETBLOCKTXN,
     NetMsgType::BLOCKTXN,
+    NetMsgType::GETCFILTERS,
+    NetMsgType::CFILTER,
     NetMsgType::GETCFHEADERS,
     NetMsgType::CFHEADERS,
     NetMsgType::GETCFCHECKPT,
@@ -216,11 +220,7 @@ static std::string serviceFlagToStr(size_t bit)
     std::ostringstream stream;
     stream.imbue(std::locale::classic());
     stream << "UNKNOWN[";
-    if (bit < 8) {
-        stream << service_flag;
-    } else {
-        stream << "2^" << bit;
-    }
+    stream << "2^" << bit;
     stream << "]";
     return stream.str();
 }

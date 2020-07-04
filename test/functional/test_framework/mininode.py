@@ -26,13 +26,15 @@ import threading
 
 from test_framework.messages import (
     CBlockHeader,
+    MAX_HEADERS_RESULTS,
     MIN_VERSION_SUPPORTED,
     msg_addr,
     msg_block,
     MSG_BLOCK,
     msg_blocktxn,
-    msg_cfheaders,
     msg_cfcheckpt,
+    msg_cfheaders,
+    msg_cfilter,
     msg_cmpctblock,
     msg_feefilter,
     msg_filteradd,
@@ -69,8 +71,9 @@ MESSAGEMAP = {
     b"addr": msg_addr,
     b"block": msg_block,
     b"blocktxn": msg_blocktxn,
-    b"cfheaders": msg_cfheaders,
     b"cfcheckpt": msg_cfcheckpt,
+    b"cfheaders": msg_cfheaders,
+    b"cfilter": msg_cfilter,
     b"cmpctblock": msg_cmpctblock,
     b"feefilter": msg_feefilter,
     b"filteradd": msg_filteradd,
@@ -332,8 +335,9 @@ class P2PInterface(P2PConnection):
     def on_addr(self, message): pass
     def on_block(self, message): pass
     def on_blocktxn(self, message): pass
-    def on_cfheaders(self, message): pass
     def on_cfcheckpt(self, message): pass
+    def on_cfheaders(self, message): pass
+    def on_cfilter(self, message): pass
     def on_cmpctblock(self, message): pass
     def on_feefilter(self, message): pass
     def on_filteradd(self, message): pass
@@ -489,7 +493,7 @@ class P2PInterface(P2PConnection):
 # P2PConnection acquires this lock whenever delivering a message to a P2PInterface.
 # This lock should be acquired in the thread running the test logic to synchronize
 # access to any data shared with the P2PInterface or P2PConnection.
-mininode_lock = threading.RLock()
+mininode_lock = threading.Lock()
 
 
 class NetworkThread(threading.Thread):
@@ -550,7 +554,6 @@ class P2PDataStore(P2PInterface):
             return
 
         headers_list = [self.block_store[self.last_block_hash]]
-        maxheaders = 2000
         while headers_list[-1].sha256 not in locator.vHave:
             # Walk back through the block store, adding headers to headers_list
             # as we go.
@@ -566,7 +569,7 @@ class P2PDataStore(P2PInterface):
                 break
 
         # Truncate the list if there are too many headers
-        headers_list = headers_list[:-maxheaders - 1:-1]
+        headers_list = headers_list[:-MAX_HEADERS_RESULTS - 1:-1]
         response = msg_headers(headers_list)
 
         if response is not None:
@@ -655,8 +658,6 @@ class P2PTxInvStore(P2PInterface):
                 # save txid
                 self.tx_invs_received[i.hash] += 1
 
-        super().on_inv(message)
-
     def get_invs(self):
         with mininode_lock:
             return list(self.tx_invs_received.keys())
@@ -666,6 +667,6 @@ class P2PTxInvStore(P2PInterface):
         The mempool should mark unbroadcast=False for these transactions.
         """
         # Wait until invs have been received (and getdatas sent) for each txid.
-        self.wait_until(lambda: set(self.get_invs()) == set([int(tx, 16) for tx in txns]), timeout)
+        self.wait_until(lambda: set(self.tx_invs_received.keys()) == set([int(tx, 16) for tx in txns]), timeout)
         # Flush messages and wait for the getdatas to be processed
         self.sync_with_ping()

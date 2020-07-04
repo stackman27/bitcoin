@@ -13,6 +13,7 @@
 #include <node/coin.h>
 #include <node/context.h>
 #include <node/transaction.h>
+#include <node/ui_interface.h>
 #include <policy/fees.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
@@ -25,7 +26,6 @@
 #include <sync.h>
 #include <timedata.h>
 #include <txmempool.h>
-#include <ui_interface.h>
 #include <uint256.h>
 #include <univalue.h>
 #include <util/system.h>
@@ -63,9 +63,9 @@ public:
     {
         m_notifications->transactionAddedToMempool(tx);
     }
-    void TransactionRemovedFromMempool(const CTransactionRef& tx) override
+    void TransactionRemovedFromMempool(const CTransactionRef& tx, MemPoolRemovalReason reason) override
     {
-        m_notifications->transactionRemovedFromMempool(tx);
+        m_notifications->transactionRemovedFromMempool(tx, reason);
     }
     void BlockConnected(const std::shared_ptr<const CBlock>& block, const CBlockIndex* index) override
     {

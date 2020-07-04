@@ -47,7 +47,6 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const interface
             if(mine)
             {
                 TransactionRecord sub(hash, nTime);
-                CTxDestination address;
                 sub.idx = i; // vout index
                 sub.credit = txout.nValue;
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
@@ -235,6 +234,7 @@ void TransactionRecord::updateStatus(const interfaces::WalletTxStatus& wtx, cons
 
 bool TransactionRecord::statusUpdateNeeded(const uint256& block_hash) const
 {
+    assert(!block_hash.IsNull());
     return status.m_cur_block_hash != block_hash || status.needsUpdate;
 }
 

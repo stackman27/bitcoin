@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UI_INTERFACE_H
-#define BITCOIN_UI_INTERFACE_H
+#ifndef BITCOIN_NODE_UI_INTERFACE_H
+#define BITCOIN_NODE_UI_INTERFACE_H
 
 #include <functional>
 #include <memory>
@@ -19,14 +19,6 @@ namespace signals2 {
 class connection;
 }
 } // namespace boost
-
-/** General change type (added, updated, removed). */
-enum ChangeType
-{
-    CT_NEW,
-    CT_UPDATED,
-    CT_DELETED
-};
 
 /** Signals for UI communication. */
 class CClientUIInterface
@@ -66,9 +58,6 @@ public:
 
         /** Force blocking, modal message box dialog (not just OS notification) */
         MODAL               = 0x10000000U,
-
-        /** Do not prepend error/warning prefix */
-        MSG_NOPREFIX        = 0x20000000U,
 
         /** Do not print contents of message to debug log */
         SECURE              = 0x40000000U,
@@ -125,7 +114,8 @@ void InitWarning(const bilingual_str& str);
 
 /** Show error message **/
 bool InitError(const bilingual_str& str);
+constexpr auto AbortError = InitError;
 
 extern CClientUIInterface uiInterface;
 
-#endif // BITCOIN_UI_INTERFACE_H
+#endif // BITCOIN_NODE_UI_INTERFACE_H

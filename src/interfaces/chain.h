@@ -8,6 +8,7 @@
 #include <optional.h>               // For Optional and nullopt
 #include <primitives/transaction.h> // For CTransactionRef
 
+#include <functional>
 #include <memory>
 #include <stddef.h>
 #include <stdint.h>
@@ -20,6 +21,7 @@ class CRPCCommand;
 class CScheduler;
 class Coin;
 class uint256;
+enum class MemPoolRemovalReason;
 enum class RBFTransactionState;
 struct bilingual_str;
 struct CBlockLocator;
@@ -239,7 +241,7 @@ public:
     public:
         virtual ~Notifications() {}
         virtual void transactionAddedToMempool(const CTransactionRef& tx) {}
-        virtual void transactionRemovedFromMempool(const CTransactionRef& ptx) {}
+        virtual void transactionRemovedFromMempool(const CTransactionRef& tx, MemPoolRemovalReason reason) {}
         virtual void blockConnected(const CBlock& block, int height) {}
         virtual void blockDisconnected(const CBlock& block, int height) {}
         virtual void updatedBlockTip() {}
